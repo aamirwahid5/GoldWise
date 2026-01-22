@@ -8,9 +8,8 @@ const STORAGE_KEYS = {
 };
 
 const DEFAULT_SETTINGS = { defaultCity: "Srinagar" };
-const BASE_URL = location.hostname.includes("localhost")
-  ? "http://localhost:5050"
-  : "https://YOUR-RENDER-URL.onrender.com";
+const BASE_URL = "https://goldwise.onrender.com";
+
 
 
 const CITIES = [
