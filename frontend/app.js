@@ -8,6 +8,10 @@ const STORAGE_KEYS = {
 };
 
 const DEFAULT_SETTINGS = { defaultCity: "Srinagar" };
+const BASE_URL = location.hostname.includes("localhost")
+  ? "http://localhost:5050"
+  : "https://YOUR-RENDER-URL.onrender.com";
+
 
 const CITIES = [
   { name: "Srinagar", type: "J&K", premium: 1.0 },
@@ -75,7 +79,8 @@ async function loadNews(category = NEWS_ACTIVE_CATEGORY) {
   try {
     NEWS_ACTIVE_CATEGORY = category;
 
-    const url = `http://localhost:5050/api/news?category=${encodeURIComponent(category)}&ts=${Date.now()}`;
+	const url = `${BASE_URL}/api/news?category=${encodeURIComponent(category)}&ts=${Date.now()}`;
+
     const r = await fetch(url, { cache: "no-store" });
     const data = await r.json();
 
@@ -127,7 +132,8 @@ let LIVE_CACHE = null;
 let LIVE_TIMER = null;
 
 async function fetchLiveRates() {
-  const res = await fetch("http://localhost:5050/api/live");
+  const res = await fetch(`${BASE_URL}/api/live`);
+
   const data = await res.json();
   if (!data.ok) throw new Error(data.error || "Live API failed");
   LIVE_CACHE = data;
