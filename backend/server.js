@@ -271,6 +271,9 @@ app.get("/api/news", async (req, res) => {
     });
   }
 });
+app.get("/", (req, res) => {
+  res.send("✅ GoldWise Backend is running!");
+});
 
 app.listen(PORT, () => {
   console.log(`✅ Backend running on http://localhost:${PORT}`);
