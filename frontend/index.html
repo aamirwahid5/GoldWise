@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GoldWise — Live Gold & Silver Tracker</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="icon" href="data:,">
+</head>
+
+<body>
+<header class="topbar">
+  <button class="icon-btn mobile-only" id="btnMenu" aria-label="Open menu">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
+  <div class="brand">
+    <div class="logo"><i class="fa-solid fa-coins"></i></div>
+    <div>
+      <div class="brand-title">GoldWise</div>
+      <div class="brand-sub">Srinagar Local Retail + Live Spot Movement</div>
+    </div>
+  </div>
+
+  <div class="top-actions">
+    <button class="btn primary" id="btnRefresh">
+      <i class="fa-solid fa-rotate"></i> Refresh
+    </button>
+  </div>
+</header>
+
+<div class="layout">
+  <div class="overlay" id="overlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <nav class="nav">
+      <button class="nav-item active" data-tab="dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</button>
+      <button class="nav-item" data-tab="compare"><i class="fa-solid fa-scale-balanced"></i> Compare</button>
+      <button class="nav-item" data-tab="calculator"><i class="fa-solid fa-calculator"></i> Calculator</button>
+      <button class="nav-item" data-tab="advisor"><i class="fa-solid fa-wand-magic-sparkles"></i> Advisor</button>
+      <button class="nav-item" data-tab="settings"><i class="fa-solid fa-gear"></i> Settings</button>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-header">
+        <h1 class="hero-title">Live Gold Tracking</h1>
+        <p class="hero-sub">Srinagar-focused. Simple, clear, real-time updates.</p>
+      </div>
+
+      <!-- ✅ NEWS BELOW HERO TITLE -->
+      <div class="hero-news-top">
+        <div class="news-strip">
+          <div class="news-title">
+            <i class="fa-regular fa-bell"></i> Latest Gold News
+            <span class="news-updated" id="newsUpdated">Updated: --</span>
+          </div>
+
+          <div class="news-tabs">
+            <button class="news-tab active" data-news="kashmir">Kashmir</button>
+            <button class="news-tab" data-news="india">India</button>
+            <button class="news-tab" data-news="global">Global</button>
+            <button class="news-tab" data-news="silver">Silver</button>
+          </div>
+
+          <div id="newsTicker" class="news-ticker">Loading market updates...</div>
+        </div>
+      </div>
+
+      <!-- TOP GRID -->
+      <div class="hero-row-top">
+
+        <!-- Market Mood -->
+        <div class="mood-card" id="moodCard">
+          <div class="mood-head">
+            <div class="mood-title">
+              <i class="fa-solid fa-bolt"></i>
+              Market Mood (AI Signal)
+            </div>
+            <div class="mood-chip" id="moodUpdated">Live</div>
+          </div>
+
+          <div class="mood-body mood-body-fixed mood-inline">
+            <div class="mood-left">
+              <div class="mood-signal" id="moodSignalText">WATCH</div>
+              <div class="mood-sub" id="moodReason">Analyzing movement...</div>
+
+              <div class="mood-stats mood-stats-4col">
+                <div class="mood-stat">
+                  <div class="mood-stat-label">Gold Trend</div>
+                  <div class="mood-stat-value" id="moodGoldTrend">--</div>
+                </div>
+
+                <div class="mood-stat">
+                  <div class="mood-stat-label">Silver Trend</div>
+                  <div class="mood-stat-value" id="moodSilverTrend">--</div>
+                </div>
+
+                <div class="mood-stat">
+                  <div class="mood-stat-label">Volatility</div>
+                  <div class="mood-stat-value" id="moodVolatility">--</div>
+                </div>
+
+                <div class="mood-stat mood-stat-confidence">
+                  <div class="mood-stat-label">Confidence</div>
+                  <div class="mood-conf-inline">
+                    <span id="moodConfidence">--</span>%
+                  </div>
+                  <div class="mood-bar small">
+                    <div class="mood-bar-fill" id="moodBarFill"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mood-note" id="moodTip" style="margin-top:12px">Tip will appear here</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GOLD CARD -->
+        <div class="hero-card">
+          <div class="hero-card-top">
+            <div class="pill"><span class="dot"></span> GOLD (SRINAGAR)</div>
+            <div class="chip" id="lastUpdatedChip">Updated: --</div>
+          </div>
+
+          <div class="rate-grid">
+            <div class="rate-box">
+              <div class="label">24K (1g)</div>
+              <div class="value" id="jk24">₹ --</div>
+              <div class="sub" id="jk24Sub">10g: --</div>
+            </div>
+
+            <div class="rate-box">
+              <div class="label">22K (1g)</div>
+              <div class="value" id="jk22">₹ --</div>
+              <div class="sub" id="jk22Sub">10g: --</div>
+            </div>
+
+            <div class="rate-box">
+              <div class="label">Spot Gold (USD/oz)</div>
+              <div class="value" id="global24usd">$ --</div>
+              <div class="sub" id="global24usdSub">XAU Spot</div>
+            </div>
+
+            <div class="rate-box">
+              <div class="label">USD → INR</div>
+              <div class="value" id="fxRate">--</div>
+              <div class="sub" id="fxRateSub">Live FX</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SILVER CARD -->
+        <div class="hero-card">
+          <div class="hero-card-top">
+            <div class="pill"><span class="dot"></span> SILVER</div>
+            <div class="chip" id="silverUpdatedChip">Updated: --</div>
+          </div>
+
+          <div class="rate-grid">
+            <div class="rate-box">
+              <div class="label">Spot Silver (USD/oz)</div>
+              <div class="value" id="silverUsdOz">$ --</div>
+              <div class="sub">XAG Spot</div>
+            </div>
+
+            <div class="rate-box">
+              <div class="label">Silver (1g)</div>
+              <div class="value" id="silverInrG">₹ --</div>
+              <div class="sub">Per gram</div>
+            </div>
+
+            <div class="rate-box">
+              <div class="label">Silver (10g)</div>
+              <div class="value" id="silverInr10g">₹ --</div>
+              <div class="sub">Small pack</div>
+            </div>
+
+            <div class="rate-box">
+              <div class="label">Silver (1kg)</div>
+              <div class="value" id="silverInrKg">₹ --</div>
+              <div class="sub">Wholesale</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Today’s Best Buy Window -->
+      <div class="buy-window" id="buyWindow">
+        <div class="buy-head">
+          <div class="buy-title">
+            <i class="fa-solid fa-clock"></i>
+            Today’s Best Buy Window
+          </div>
+          <div class="buy-badge" id="buyBadge">--</div>
+        </div>
+
+        <div class="buy-body">
+          <div class="buy-main">
+            <h3 id="buyTitle">Loading...</h3>
+            <p id="buyDesc">Please wait…</p>
+
+            <div style="margin-top:12px">
+              <div class="muted" style="font-weight:800;font-size:12px;margin-bottom:6px">
+                Today Price Position (Low → High)
+              </div>
+
+              <div style="position:relative;height:12px;border-radius:999px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);overflow:hidden">
+                <div id="buyBarFill" style="height:100%;width:50%;background:rgba(244,197,66,0.55)"></div>
+
+                <div id="buyPointer"
+                     style="position:absolute;top:-6px;left:50%;transform:translateX(-50%);
+                            width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;
+                            border-bottom:10px solid rgba(244,197,66,0.95)">
+                </div>
+              </div>
+
+              <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:rgba(255,255,255,0.72)">
+                <div><b>Low:</b> <span id="buyLow">--</span></div>
+                <div><b>Avg:</b> <span id="buyAvg">--</span></div>
+                <div><b>High:</b> <span id="buyHigh">--</span></div>
+              </div>
+            </div>
+
+            <p style="margin-top:12px">
+              <span class="muted">Suggested Action:</span>
+              <span id="buyAction" style="font-weight:900"></span>
+            </p>
+          </div>
+
+          <div class="buy-stats">
+            <div class="buy-stat">
+              <div class="k">Time Window</div>
+              <div class="v" id="buyTime">--</div>
+            </div>
+
+            <div class="buy-stat">
+              <div class="k">Risk Level</div>
+              <div class="v" id="buyRisk">--</div>
+            </div>
+
+            <div class="buy-stat">
+              <div class="k">Gold Right Now</div>
+              <div class="v" id="buyNowRate">--</div>
+            </div>
+
+            <div class="buy-stat">
+              <div class="k">Mode</div>
+              <div class="v">Srinagar</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TABS -->
+    <section class="tabs">
+
+      <!-- DASHBOARD -->
+      <div class="tab active" id="tab-dashboard">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Live Trend (Gold + Silver)</h2>
+              <p>Easy view: left = Gold (Srinagar retail), right = Silver (spot).</p>
+            </div>
+          </div>
+
+          <div class="split-charts">
+            <div class="chart-card">
+              <div class="chart-title">
+                <i class="fa-solid fa-chart-line"></i>
+                Gold Trend (24K • ₹/g)
+              </div>
+              <div class="chart-sub">Moves like a stock chart.</div>
+              <div class="chart-wrap split">
+                <canvas id="trendChart"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-title">
+                <i class="fa-solid fa-chart-line"></i>
+                Silver Trend (₹/g)
+              </div>
+              <div class="chart-sub">Compare movement easily.</div>
+              <div class="chart-wrap split">
+                <canvas id="silverTrendChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMPARE -->
+      <div class="tab" id="tab-compare">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Compare</h2>
+              <p>Compare nearby J&K cities (premium-based).</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label>Purity</label>
+              <select id="comparePurity">
+                <option value="24">24K</option>
+                <option value="22" selected>22K</option>
+                <option value="18">18K</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Unit</label>
+              <select id="compareUnit">
+                <option value="gram" selected>Per gram</option>
+                <option value="tola">Per tola</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="compare-grid" id="compareGrid"></div>
+        </div>
+      </div>
+
+      <!-- CALCULATOR -->
+      <div class="tab" id="tab-calculator">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Jewellery Calculator</h2>
+              <p>Weight + making + GST = final price.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label>City</label>
+              <select id="calcCity"></select>
+            </div>
+
+            <div class="field">
+              <label>Purity</label>
+              <select id="calcPurity">
+                <option value="24">24K</option>
+                <option value="22" selected>22K</option>
+                <option value="18">18K</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Weight</label>
+              <input id="calcWeight" type="number" value="10" min="0" step="0.01"/>
+            </div>
+
+            <div class="field">
+              <label>Unit</label>
+              <select id="calcUnit">
+                <option value="gram" selected>Grams</option>
+                <option value="tola">Tola</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Making Charges (%)</label>
+              <input id="calcMaking" type="number" value="12" min="0" step="0.01"/>
+            </div>
+
+            <div class="field">
+              <label>GST (%)</label>
+              <input id="calcGST" type="number" value="3" min="0" step="0.01"/>
+            </div>
+
+            <div class="field span-2">
+              <button class="btn primary" id="btnCalc">
+                <i class="fa-solid fa-calculator"></i> Calculate
+              </button>
+            </div>
+          </div>
+
+          <div class="result-card">
+            <div class="result-row"><div class="muted">Base</div><div class="strong" id="baseValue">₹ --</div></div>
+            <div class="result-row"><div class="muted">Making</div><div class="strong" id="makingValue">₹ --</div></div>
+            <div class="result-row"><div class="muted">GST</div><div class="strong" id="gstValue">₹ --</div></div>
+            <div class="result-row total"><div>Total</div><div id="totalValue">₹ --</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADVISOR -->
+      <div class="tab" id="tab-advisor">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Advisor</h2>
+              <p>Ask anything in simple language.</p>
+            </div>
+          </div>
+
+          <div class="chat">
+            <div class="chat-box" id="chatBox"></div>
+            <div class="chat-input">
+              <input id="chatInput" placeholder="Example: Should I buy 22K today in Srinagar?"/>
+              <button class="btn primary" id="btnChatSend">
+                <i class="fa-solid fa-paper-plane"></i> Send
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="tab" id="tab-settings">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h2>Settings</h2>
+              <p>Basic user preferences.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field span-2">
+              <label>Default City</label>
+              <select id="defaultCity"></select>
+            </div>
+
+            <div class="field span-2">
+              <button class="btn primary" id="btnSaveSettings">
+                <i class="fa-solid fa-floppy-disk"></i> Save Settings
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
